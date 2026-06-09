@@ -56,7 +56,7 @@ class Tensor:
   def __add__(self, other):
     other = other if isinstance(other, Tensor) else Tensor(other, device=self.device)
     assert self.device == other.device, "Tensors must be on the same device"
-    out = Tensor(self.data + other.data, (self, other), op='+')
+    out = Tensor(self.data + other.data, (self, other), op='+', device=self.device)
     def _backward():
       grad_self = out.grad
       while len(grad_self.shape) > len(self.data.shape):
@@ -85,7 +85,7 @@ class Tensor:
   def __mul__(self, other):
     other = other if isinstance(other, Tensor) else Tensor(other, device=self.device)
     assert self.device == other.device, "Tensors must be on the same device"
-    out = Tensor(self.data * other.data, (self, other), op='*')
+    out = Tensor(self.data * other.data, (self, other), op='*', device=self.device)
     def _backward():
       grad_self = out.grad * other.data
       while len(grad_self.shape) > len(self.data.shape):
@@ -122,7 +122,7 @@ class Tensor:
   def __matmul__(self, other):
     other = other if isinstance(other, Tensor) else Tensor(other, device=self.device)
     assert self.device == other.device, "Tensors must be on the same device"
-    out = Tensor(self.data @ other.data, (self, other), op='@')
+    out = Tensor(self.data @ other.data, (self, other), op='@', device=self.device)
     def _backward():
       self.grad += out.grad @ other.data.T
       other.grad += self.data.T @ out.grad
@@ -137,6 +137,13 @@ class Tensor:
     out = Tensor(self.data.sum(), (self,), op='arrsum', device=self.device)
     def _backward():
       self.grad += self.xp.ones_like(self.data) * out.grad
+    out.backward = _backward
+    return out
+  
+  def mean(self):
+    out = Tensor(self.data.mean(), (self,), op='arrmean', device=self.device)
+    def _backward():
+      self.grad += (self.xp.ones_like(self.data) / self.data.size) * out.grad
     out.backward = _backward
     return out
 

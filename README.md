@@ -4,7 +4,7 @@ A PyTorch-style tensor autodiff engine and deep learning library.
 
 This project was built as an educational journey to bridge the gap between scalar-based automatic differentiation (like Andrej Karpathy's [micrograd](https://github.com/karpathy/micrograd){God Bless that man!!}) and modern, hardware-accelerated, array-agnostic frameworks (like PyTorch and JAX).
 
-`slightlybiggergrad` implements a dynamic, tape-based computational graph that operates directly on **N-Dimensional Tensors** rather than single scalars. By pushing mathematical operations down to optimized C and CUDA kernels, it achieves massive speedups while maintaining a clean, pure-Python educational architecture.
+`slightlybiggergrad` implements a dynamic, tape-based computational graph that operates directly on **N-Dimensional Tensors** rather than single scalars. By pushing mathematical operations down to optimized C and CUDA kernels using CuPY, it achieves massive speedups while maintaining a clean, pure-Python educational architecture.
 
 ### Current Features & Status
 * **N-Dimensional Tensors:** Full support for batched matrix operations.

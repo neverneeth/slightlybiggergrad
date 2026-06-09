@@ -25,8 +25,8 @@ for epoch in range(epochs):
         print(f"Epoch {epoch}, Loss: {loss.data}")
 
 
-plt.scatter(X.data, Y.data, color='gray', label='Noisy Data', alpha=0.5)
-plt.plot(X.data, Y_pred.data, color='red', linewidth=3, label='MLP Prediction')
+plt.scatter(X.numpy(), Y.numpy(), color='gray', label='Noisy Data', alpha=0.5)
+plt.plot(X.numpy(), Y_pred.numpy(), color='red', linewidth=3, label='MLP Prediction')
 plt.legend()
 plt.title("slightlybiggergrad vs. Sine Wave")
 plt.show()

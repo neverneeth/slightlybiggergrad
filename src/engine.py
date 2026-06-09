@@ -169,3 +169,8 @@ class Tensor:
     self.grad = self.xp.ones_like(self.data)
     for node in reversed(topo):
       node.backward()
+
+    def numpy(self):
+      if self.device == 'gpu':
+        return self.data.get()
+      return self.data

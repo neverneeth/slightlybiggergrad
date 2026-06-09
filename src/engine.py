@@ -155,6 +155,11 @@ class Tensor:
 
     out.backward = _backward
     return out
+  
+  def numpy(self):
+    if self.device == 'gpu':
+      return self.data.get()
+    return self.data
 
   def backward_all(self):
     topo = []
@@ -170,7 +175,5 @@ class Tensor:
     for node in reversed(topo):
       node.backward()
 
-    def numpy(self):
-      if self.device == 'gpu':
-        return self.data.get()
-      return self.data
+    
+  

@@ -3,8 +3,8 @@ import numpy as np
 
 class Linear:
     def __init__(self, nin, nout, device='cpu'):
-        self.W = Tensor(np.random.randn(nin, nout), label='W', device=device)
-        self.b = Tensor(np.random.randn(nout), label='b', device=device)
+        self.W = Tensor(np.random.randn(nin, nout) * np.sqrt(2.0 / nin), label='W', device=device)
+        self.b = Tensor(np.zeros(nout), label='b', device=device)
 
     def __call__(self, x):
         x = x if isinstance(x, Tensor) else Tensor(x, device=self.W.device)

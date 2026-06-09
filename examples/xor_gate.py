@@ -3,27 +3,29 @@ from src.nn import MLP
 import numpy as np
 
 
+device = 'gpu'  # Change to 'cpu' if you don't have a compatible GPU
+
 # 1. The Dataset (Batch of 4 samples)
 X = Tensor([
     [0.0, 0.0],
     [0.0, 1.0],
     [1.0, 0.0],
     [1.0, 1.0]
-], label='X')
+], label='X', device=device)
 
 Y = Tensor([
     [0.0],
     [1.0],
     [1.0],
     [0.0]
-], label='Y')
+], label='Y', device=device)
 
 # 2. The Model: 2 inputs -> 4 hidden -> 1 output
 # We use a lambda to pass the tanh method we wrote!
-model = MLP(nin=2, nout=[4, 1], activation=lambda x: x.tanh())
+model = MLP(nin=2, nout=[4, 1], activation=lambda x: x.tanh(), device=device)
 
 learning_rate = 0.05
-epochs = 1000
+epochs = 10000
 
 for epoch in range(epochs):
     Y_pred = model(X)

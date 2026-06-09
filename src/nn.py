@@ -12,3 +12,7 @@ class Linear:
     
     def parameters(self):
         return (self.W, self.b)
+    
+    def zero_grad(self):
+        self.W.grad = np.zeros_like(self.W.grad)
+        self.b.grad = np.zeros_like(self.b.grad)

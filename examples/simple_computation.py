@@ -20,9 +20,11 @@ XW = X @ W
 XW.label = 'XW'
 Y = XW + b
 Y.label = 'Y'
-print(f"Forward Pass Output Y:\n{Y.data}\nShape: {Y.data.shape}\n")
+O = Y.tanh()
+O.label = 'O'
+print(f"Forward Pass Output O:\n{O.data}\nShape: {O.data.shape}\n")
 
-Y.backward_all()
+O.backward_all()
 
 print("--- Gradients ---")
 print(f"Gradient for b (Notice how it summed the batch!):\n{b.grad}\n")

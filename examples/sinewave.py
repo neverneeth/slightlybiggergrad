@@ -3,19 +3,19 @@ from src.nn import Linear, MLP
 import numpy as np
 import matplotlib.pyplot as plt
 
-xs = [x for x in np.linspace(0, 2 * np.pi, 100)]
-X = Tensor(xs, label='X', device='gpu')
+X_data = np.linspace(0, 2 * np.pi, 100).reshape(-1, 1)
+Y_data = np.sin(X_data) # Automatically inherits (100, 1)
 
-ys = [np.sin(x) for x in xs]
-Y = Tensor(ys, label='Y', device='gpu')
+X = Tensor(X_data, label='X', device='gpu')
+Y = Tensor(Y_data, label='Y', device='gpu')
 
-model = MLP(nin=1, nout=[16, 16, 1], activation=lambda x: x.tanh(), device='gpu')
+model = MLP(nin=1, nout=[16, 16, 16, 16, 1], activation=lambda x: x.tanh(), device='gpu')
 
-learning_rate = 0.1
-epochs = 5000
+learning_rate = 0.01
+epochs = 20000
 
 for epoch in range(epochs):
-    Y_pred = model(X.data.reshape(-1, 1))
+    Y_pred = model(X)
     loss = ((Y_pred - Y) * (Y_pred - Y)).mean()
     model.zero_grad()
     loss.backward_all()
@@ -24,10 +24,11 @@ for epoch in range(epochs):
     if epoch % 50 == 0:
         print(f"Epoch {epoch}, Loss: {loss.data}")
 
+plt.scatter(X.numpy(), Y.numpy(), color='gray', label='Target Data', alpha=0.5)
 
-plt.scatter(X.numpy(), Y.numpy(), color='gray', label='Noisy Data', alpha=0.5)
-plt.plot(X.numpy(), Y_pred.numpy(), color='red', linewidth=3, label='MLP Prediction')
+predictions = model(X).numpy()
+plt.plot(X.numpy(), predictions, color='red', linewidth=3, label='MLP Prediction')
+
 plt.legend()
 plt.title("slightlybiggergrad vs. Sine Wave")
 plt.show()
-

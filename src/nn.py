@@ -1,4 +1,4 @@
-from engine import Tensor
+from src.engine import Tensor
 import numpy as np
 
 class Linear:

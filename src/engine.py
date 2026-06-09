@@ -35,7 +35,7 @@ def draw_dot(root):
 class Tensor:
   def __init__(self, values, _children=(), op='', label=''):
     self.data = np.array(values, dtype=np.float32)
-    self.size = len(values)
+    self.size = len(values) if isinstance(values, list) else 1
     self.backward = lambda: None
     self._prev = set(_children)
     self.grad = np.zeros_like(self.data)
@@ -118,6 +118,16 @@ class Tensor:
 
     out.backward = _backward
     return out
+  
+  def __radd__(self, other):
+    return self + other
+  
+  def sum(self):
+    out = Tensor(self.data.sum(), (self,), op='arrsum')
+    def _backward():
+      self.grad += np.ones_like(self.data) * out.grad
+    out.backward = _backward
+    return out
 
   def tanh(self):
     t = np.tanh(self.data)
@@ -141,6 +151,3 @@ class Tensor:
     self.grad = np.ones_like(self.data)
     for node in reversed(topo):
       node.backward()
-
-  def __radd__(self, other):
-    return self + other

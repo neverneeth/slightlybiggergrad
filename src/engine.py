@@ -69,6 +69,45 @@ class Tensor:
       other.grad += grad_other
     out.backward = _backward
     return out
+  
+  def __radd__(self, other):
+    return self + other
+  
+  def __mul__(self, other):
+    other = other if isinstance(other, Tensor) else Tensor(other)
+    out = Tensor(self.data * other.data, (self, other), op='*')
+    def _backward():
+      grad_self = out.grad * other.data
+      while len(grad_self.shape) > len(self.data.shape):
+        grad_self = grad_self.sum(axis=0)
+        for i, dim in enumerate(self.data.shape):
+          if dim == 1:
+            grad_self = grad_self.sum(axis=i, keepdims=True)
+      self.grad += grad_self
+
+      grad_other = out.grad * self.data
+      while len(grad_other.shape) > len(other.data.shape):
+        grad_other = grad_other.sum(axis=0)
+      for i, dim in enumerate(other.data.shape):
+        if dim == 1:
+          grad_other = grad_other.sum(axis=i, keepdims=True)
+      other.grad += grad_other
+    out.backward = _backward
+    return out
+  
+  def __rmul__(self, other):
+    return self * other
+  
+  def __neg__(self):
+    out = Tensor(-self.data, (self,), op='neg')
+    def _backward():
+      self.grad += -out.grad
+    out.backward = _backward
+    return out
+  
+  def __sub__(self, other):
+    return self + (-other)
+  
 
   def __matmul__(self, other):
     other = other if isinstance(other, Tensor) else Tensor(other)

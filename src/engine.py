@@ -1,5 +1,4 @@
 import math
-import numpy as np
 import matplotlib.pyplot as plt
 import random
 from graphviz import Digraph
@@ -33,12 +32,21 @@ def draw_dot(root):
 
 
 class Tensor:
-  def __init__(self, values, _children=(), op='', label=''):
-    self.data = np.array(values, dtype=np.float32)
+  def __init__(self, values, _children=(), op='', label='', device='cpu'):
+    if device == 'cpu':
+      import numpy as xp
+    elif device == 'gpu':
+      import cupy as xp
+    else:
+      raise ValueError("Unsupported device")
+    self.device = device
+    self.xp = xp
+
+    self.data = xp.array(values, dtype=xp.float32)
     self.size = len(values) if isinstance(values, list) else 1
     self.backward = lambda: None
     self._prev = set(_children)
-    self.grad = np.zeros_like(self.data)
+    self.grad = xp.zeros_like(self.data)
     self.op = op
     self.label = label
 
@@ -46,7 +54,8 @@ class Tensor:
     return f"Tensor(Shape: {self.data.shape}, Data: {self.data})"
 
   def __add__(self, other):
-    other = other if isinstance(other, Tensor) else Tensor(other)
+    other = other if isinstance(other, Tensor) else Tensor(other, device=self.device)
+    assert self.device == other.device, "Tensors must be on the same device"
     out = Tensor(self.data + other.data, (self, other), op='+')
     def _backward():
       grad_self = out.grad
@@ -74,7 +83,8 @@ class Tensor:
     return self + other
   
   def __mul__(self, other):
-    other = other if isinstance(other, Tensor) else Tensor(other)
+    other = other if isinstance(other, Tensor) else Tensor(other, device=self.device)
+    assert self.device == other.device, "Tensors must be on the same device"
     out = Tensor(self.data * other.data, (self, other), op='*')
     def _backward():
       grad_self = out.grad * other.data
@@ -99,7 +109,7 @@ class Tensor:
     return self * other
   
   def __neg__(self):
-    out = Tensor(-self.data, (self,), op='neg')
+    out = Tensor(-self.data, (self,), op='neg', device=self.device)
     def _backward():
       self.grad += -out.grad
     out.backward = _backward
@@ -110,7 +120,8 @@ class Tensor:
   
 
   def __matmul__(self, other):
-    other = other if isinstance(other, Tensor) else Tensor(other)
+    other = other if isinstance(other, Tensor) else Tensor(other, device=self.device)
+    assert self.device == other.device, "Tensors must be on the same device"
     out = Tensor(self.data @ other.data, (self, other), op='@')
     def _backward():
       self.grad += out.grad @ other.data.T
@@ -123,15 +134,15 @@ class Tensor:
     return self + other
   
   def sum(self):
-    out = Tensor(self.data.sum(), (self,), op='arrsum')
+    out = Tensor(self.data.sum(), (self,), op='arrsum', device=self.device)
     def _backward():
-      self.grad += np.ones_like(self.data) * out.grad
+      self.grad += self.xp.ones_like(self.data) * out.grad
     out.backward = _backward
     return out
 
   def tanh(self):
-    t = np.tanh(self.data)
-    out = Tensor(t, (self,), op='tanh')
+    t = self.xp.tanh(self.data)
+    out = Tensor(t, (self,), op='tanh', device=self.device)
     def _backward():
       self.grad += (1- t**2) * out.grad
 
@@ -148,6 +159,6 @@ class Tensor:
           build_topo(child)
         topo.append(v)
     build_topo(self)
-    self.grad = np.ones_like(self.data)
+    self.grad = self.xp.ones_like(self.data)
     for node in reversed(topo):
       node.backward()

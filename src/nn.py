@@ -2,12 +2,12 @@ from src.engine import Tensor
 import numpy as np
 
 class Linear:
-    def __init__(self, nin, nout):
-        self.W = Tensor(np.random.randn(nin, nout), label='W')
-        self.b = Tensor(np.random.randn(nout), label='b')
-    
+    def __init__(self, nin, nout, device='cpu'):
+        self.W = Tensor(np.random.randn(nin, nout), label='W', device=device)
+        self.b = Tensor(np.random.randn(nout), label='b', device=device)
+
     def __call__(self, x):
-        x = x if isinstance(x, Tensor) else Tensor(x)
+        x = x if isinstance(x, Tensor) else Tensor(x, device=self.W.device)
         return x @ self.W + self.b
     
     def parameters(self):
@@ -15,21 +15,21 @@ class Linear:
     
     def zero_grad(self):
         for p in self.parameters():
-            p.grad = np.zeros_like(p.data)
+            p.grad = p.xp.zeros_like(p.data)
 
 class MLP:
-    def __init__(self, nin, nout, activation=None):
+    def __init__(self, nin, nout, activation=None, device='cpu'):
         self.layers = []
         self.activation = activation
         for ns in nout:
-            layer = Linear(nin, ns)
+            layer = Linear(nin, ns, device=device)
             self.layers.append(layer)
             nin = ns
             
             
 
     def __call__(self, x):
-        x = x if isinstance(x, Tensor) else Tensor(x)
+        x = x if isinstance(x, Tensor) else Tensor(x, device=self.layers[0].W.device)
         for i, layer in enumerate(self.layers):
             x = layer(x)
             if self.activation and i < len(self.layers) - 1:
@@ -44,4 +44,4 @@ class MLP:
     
     def zero_grad(self):
         for p in self.parameters():
-            p.grad = np.zeros_like(p.data)
+            p.grad = p.xp.zeros_like(p.data)

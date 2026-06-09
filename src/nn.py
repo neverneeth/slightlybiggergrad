@@ -14,5 +14,5 @@ class Linear:
         return (self.W, self.b)
     
     def zero_grad(self):
-        self.W.grad = np.zeros_like(self.W.grad)
-        self.b.grad = np.zeros_like(self.b.grad)
+        for p in self.parameters():
+            p.grad = np.zeros_like(p.data)

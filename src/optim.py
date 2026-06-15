@@ -27,7 +27,7 @@ class ADAM(Optimizer):
         self.beta2 = beta2
         self.eps = eps
 
-    def __call__(self, epoch):
+    def __call__(self):
         for param in self.params:
             if not hasattr(param, 'm'):
                 param.m = param.xp.zeros_like(param.data)
@@ -44,4 +44,4 @@ class ADAM(Optimizer):
             param.data -= self.lr * m_hat / (v_hat ** 0.5 + self.eps)
 
     def step(self, epoch):
-        self(epoch)
+        self()

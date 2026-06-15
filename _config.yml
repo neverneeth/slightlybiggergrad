@@ -1,8 +1,12 @@
+remote_theme: pages-themes/hacker@v0.2.0
 plugins:
   - jekyll-relative-links
+  - jekyll-remote-theme
 relative_links:
   enabled: true
   collections: true
 include:
   - README.md
   - index.md
+title: Slightly Bigger Grad
+description: A PyTorch-like autograd engine and neural network library built from scratch in Python, designed to leverage GPU acceleration for larger datasets and models.

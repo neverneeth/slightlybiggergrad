@@ -16,6 +16,6 @@ This is my attempt at creating a tutorial for **`slightlybiggergrad`**. This lib
 
 I highly recommend watching the [micrograd video](https://www.youtube.com/watch?v=VMj-3S1tku0) before diving into this tutorial, as it covers the core concepts of automatic differentiation in a simple scalar context. `slightlybiggergrad` takes those concepts and extends them to operate directly on N-dimensional tensors, while also incorporating device-agnostic hardware acceleration using CuPY.
 
-#### Contents
+### Contents
 
-1. [Introduction](neverneeth.github.io/slightlybiggergrad/tut/introduction.html/)
+1. [Introduction](/tut/introduction.html/)

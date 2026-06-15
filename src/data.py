@@ -62,7 +62,9 @@ class DataLoader:
         
         for i in range(0, n_samples, self.batch_size):
             batch_indices = indices[i:i + self.batch_size]
-            yield self.X[batch_indices], self.Y[batch_indices]
+            X_batch = Tensor(self.X[batch_indices], device=self.device)
+            Y_batch = Tensor(self.Y[batch_indices], device=self.device)
+            yield X_batch, Y_batch
 
     def __len__(self):
         return (self.X.shape[0] + self.batch_size - 1) // self.batch_size

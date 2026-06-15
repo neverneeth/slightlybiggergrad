@@ -43,5 +43,5 @@ class ADAM(Optimizer):
 
             param.data -= self.lr * m_hat / (v_hat ** 0.5 + self.eps)
 
-    def step(self, epoch):
+    def step(self):
         self()

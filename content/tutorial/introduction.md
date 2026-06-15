@@ -1,0 +1,7 @@
+### Introduction
+
+At the end of the day, a **neural network** is just a fancy function that takes in some input, performs a series of mathematical operations on it, and produces some output. Now to design such a function by hand, we would need to have perfect knowledge of the system the neural network attempts to model. However, in most real-world scenarios, we don't have this perfect knowledge. This is where the concept of **learning** comes into play. Instead of hand-designing the function, we can let the neural network learn it from data. The process of learning involves adjusting the parameters of the neural network (namely weights and biases) in such a way that the output of the neural network gets closer to the desired output for a given input.
+
+Again, we are posed with a question: how do we adjust the parameters of the neural network? We could manually tune each and every parameter, until our function works for any input we might throw at it. And this could feasible work if the number of parameters is really really small. But in practice, neural networks are employed to model highly complex systems, and thus they often have millions or even billions of parameters.
+
+Now I'm not here to tell that it's impossible. If that's what suits you then go for it. But for other normal people(as normal as normal get), we need something more efficient. Something can be **automated**. This is where backpropagation and automatic differentiation come into play.  

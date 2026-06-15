@@ -4,7 +4,7 @@ import gc
 
 from src.engine import Tensor
 from src.nn import MLP
-from src.data import load_california_housing, train_test_split, StandardScaler
+from src.data import load_california_housing, train_test_split, StandardScaler, DataLoader
 from src.optim import BGD, ADAM
 
 X, Y_raw = load_california_housing()
@@ -17,27 +17,30 @@ X_test = scaler.transform(X_test)
 print(f"Training samples: {X_train.shape[0]}, Test samples: {X_test.shape[0]}")
 
 device = 'gpu'  
-X_train_tensor = Tensor(X_train, device=device)
-Y_train_tensor = Tensor(Y_train, device=device)
 
-EPOCHS = 2000
+dataloader = DataLoader(X_train, Y_train, batch_size=32, shuffle=True, device=device)
+
+EPOCHS = 30
 
 # BDG PHASE
 
 print("\n--- Training Model 1 with BGD ---")
-model1 = MLP(nin=X_train.shape[1], nout=[1024, 512, 256, 128, 64, 32, 1], activation=lambda x: x.tanh(), device=device)
+model1 = MLP(nin=X_train.shape[1], nout=[256, 128, 64, 32, 1], activation=lambda x: x.tanh(), device=device)
 BGD_optimizer = BGD(params=model1.parameters(), lr=0.01)
 losses1 = []
 
 for epoch in range(EPOCHS):
-    model1.zero_grad()
-    Y_pred = model1(X_train_tensor)
-    loss = ((Y_pred - Y_train_tensor) * (Y_pred - Y_train_tensor)).mean()
-    loss.backward_all()
-    BGD_optimizer.step()
-    losses1.append(float(loss.data))
+    running_loss = 0.0
+    for X_batch, Y_batch in dataloader:
+        model1.zero_grad()
+        Y_pred = model1(X_batch)
+        loss = ((Y_pred - Y_batch) * (Y_pred - Y_batch)).mean()
+        loss.backward_all()
+        BGD_optimizer.step()
+        running_loss += float(loss.data)
+    losses1.append(running_loss / len(dataloader))
 
-    if epoch % 100 == 0:
+    if epoch % 1 == 0:
         print(f"Epoch {epoch} | Loss (BGD): {losses1[-1]:.4f}")
         
     # Nuke everything to avoid CUDA OOM    
@@ -61,19 +64,22 @@ if device == 'gpu':
 # ADAM PHASE
 
 print("\n--- Training Model 2 with ADAM ---")
-model2 = MLP(nin=X_train.shape[1], nout=[1024, 512, 256, 128, 64, 32, 1], activation=lambda x: x.tanh(), device=device)
+model2 = MLP(nin=X_train.shape[1], nout=[256, 128, 64, 32, 1], activation=lambda x: x.tanh(), device=device)
 ADAM_optimizer = ADAM(params=model2.parameters(), lr=0.001)
 losses2 = []
 
 for epoch in range(EPOCHS):
-    model2.zero_grad()
-    Y_pred2 = model2(X_train_tensor)
-    loss2 = ((Y_pred2 - Y_train_tensor) * (Y_pred2 - Y_train_tensor)).mean()
-    loss2.backward_all()
-    ADAM_optimizer.step()
-    losses2.append(float(loss2.data))
+    running_loss2 = 0.0
+    for X_batch, Y_batch in dataloader:
+        model2.zero_grad()
+        Y_pred2 = model2(X_batch)
+        loss2 = ((Y_pred2 - Y_batch) * (Y_pred2 - Y_batch)).mean()
+        loss2.backward_all()
+        ADAM_optimizer.step()
+        running_loss2 += float(loss2.data)
+    losses2.append(running_loss2 / len(dataloader))
 
-    if epoch % 100 == 0:
+    if epoch % 1 == 0:
         print(f"Epoch {epoch} | Loss (ADAM): {losses2[-1]:.4f}")
         
     # Once again nuke everything to avoid CUDA OOM
@@ -93,7 +99,7 @@ print(f"Test Loss (ADAM): {test_loss_adam:.4f}")
 plt.plot(range(EPOCHS), losses1, label='BGD', color='blue')
 plt.plot(range(EPOCHS), losses2, label='ADAM', color='orange')
 plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.title('Training Loss over Epochs: BGD vs. ADAM')
+plt.ylabel('Mean Squared Error')
+plt.title('Training Loss Convergence: BGD vs. ADAM')
 plt.legend()
 plt.show()

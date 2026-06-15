@@ -7,5 +7,17 @@ theme = 'PaperMod'
     env = 'production'
     description = 'A PyTorch-like autograd engine and neural network library built from scratch in Python.'
     defaultTheme = 'auto' # Enables automatic browser-matching dark/light mode
-    showToc = true
+    showToc = false
     disableSpecial1stPost = false
+[params.profileMode]
+    enabled = true
+    title = "Slightly Bigger Grad"
+    subtitle = "An accelerated, hardware-agnostic autograd engine built from scratch in Python and CUDA."
+    alignment = "center"
+    
+    [[params.profileMode.buttons]]
+        name = "Read the Tutorials"
+        url = "tutorial/"
+    [[params.profileMode.buttons]]
+        name = "GitHub Repository"
+        url = "https://github.com/your-username/slightlybiggergrad"

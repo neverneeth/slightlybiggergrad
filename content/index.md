@@ -18,4 +18,4 @@ I highly recommend watching the [micrograd video](https://www.youtube.com/watch?
 
 ### Contents
 
-1. [Introduction](/tut/introduction.html/)
+1. [Introduction](/slightlybiggergrad/tutorial/introduction.html/)

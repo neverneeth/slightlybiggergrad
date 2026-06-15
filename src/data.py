@@ -3,6 +3,9 @@ import numpy as np
 import urllib.request
 import os
 
+from src.engine import Tensor
+from src.nn import MLP
+
 def load_california_housing(path="../datasets/housing.csv"):
     url = "https://raw.githubusercontent.com/ageron/handson-ml2/master/datasets/housing/housing.csv"
     data_path = path
@@ -42,3 +45,24 @@ class StandardScaler:
     def fit_transform(self, X):
         self.fit(X)
         return self.transform(X)
+    
+class DataLoader:
+    def __init__(self, X, Y, batch_size=32, shuffle=True, device='cpu'):
+        self.X = np.array(X) if not isinstance(X, np.ndarray) else X
+        self.Y = np.array(Y) if not isinstance(Y, np.ndarray) else Y
+        self.batch_size = batch_size
+        self.shuffle = shuffle
+        self.device = device
+
+    def __iter__(self):
+        n_samples = self.X.shape[0]
+        indices = np.arange(n_samples)
+        if self.shuffle:
+            np.random.shuffle(indices)
+        
+        for i in range(0, n_samples, self.batch_size):
+            batch_indices = indices[i:i + self.batch_size]
+            yield self.X[batch_indices], self.Y[batch_indices]
+
+    def __len__(self):
+        return (self.X.shape[0] + self.batch_size - 1) // self.batch_size

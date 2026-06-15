@@ -6,6 +6,8 @@ This project was built as an educational journey to bridge the gap between scala
 
 `slightlybiggergrad` implements a dynamic, tape-based computational graph that operates directly on **N-Dimensional Tensors** rather than single scalars. By pushing mathematical operations down to optimized C and CUDA kernels using CuPY, it achieves massive speedups while maintaining a clean, pure-Python educational architecture.
 
+I have attempted to create a tutorial for those that want to understand how everything works and build their own engine from scratch. Refer to the [Engineering Log](https://neverneeth.github.io/slightlybiggergrad/) for a deep dive into the design and implementation of `slightlybiggergrad`, along with code snippets and explanations.
+
 ### Current Features & Status
 * **N-Dimensional Tensors:** Full support for batched matrix operations.
 * **Dynamic Autograd Engine:** Implements topological sorting (`backward_all()`) across batched memory blocks.

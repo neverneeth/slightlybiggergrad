@@ -25,7 +25,7 @@ EPOCHS = 2000
 # BDG PHASE
 
 print("\n--- Training Model 1 with BGD ---")
-model1 = MLP(nin=X_train.shape[1], nout=[512, 256, 128, 64, 32, 1], activation=lambda x: x.tanh(), device=device)
+model1 = MLP(nin=X_train.shape[1], nout=[1024, 512, 256, 128, 64, 32, 1], activation=lambda x: x.tanh(), device=device)
 BGD_optimizer = BGD(params=model1.parameters(), lr=0.01)
 losses1 = []
 
@@ -61,7 +61,7 @@ if device == 'gpu':
 # ADAM PHASE
 
 print("\n--- Training Model 2 with ADAM ---")
-model2 = MLP(nin=X_train.shape[1], nout=[512, 256, 128, 64, 32, 1], activation=lambda x: x.tanh(), device=device)
+model2 = MLP(nin=X_train.shape[1], nout=[1024, 512, 256, 128, 64, 32, 1], activation=lambda x: x.tanh(), device=device)
 ADAM_optimizer = ADAM(params=model2.parameters(), lr=0.001)
 losses2 = []
 

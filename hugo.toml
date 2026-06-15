@@ -1,0 +1,11 @@
+baseURL = 'https://neverneeth.github.io/slightlybiggergrad/'
+languageCode = 'en-us'
+title = 'Slightly Bigger Grad'
+theme = 'PaperMod'
+
+[params]
+    env = 'production'
+    description = 'A PyTorch-like autograd engine and neural network library built from scratch in Python.'
+    defaultTheme = 'auto' # Enables automatic browser-matching dark/light mode
+    showToc = true
+    disableSpecial1stPost = false

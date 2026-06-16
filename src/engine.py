@@ -156,6 +156,22 @@ class Tensor:
     out.backward = _backward
     return out
   
+  def relu(self):
+    t = self.xp.maximum(0, self.data)
+    out = Tensor(t, (self,), op='relu', device=self.device)
+    def _backward():
+      self.grad += (self.data > 0) * out.grad
+    out.backward = _backward
+    return out
+  
+  def sigmoid(self):
+    t =  1 / (1+ self.xp.exp(-self.data))
+    out  = Tensor(t, (self,), op='sigmoid', device=self.device)
+    def _backward():
+      self.grad += t * (1 - t) * out.grad
+    out.backward = _backward
+    return out
+  
   def numpy(self):
     if self.device == 'gpu':
       return self.data.get()

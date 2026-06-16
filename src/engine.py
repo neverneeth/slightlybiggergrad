@@ -165,10 +165,11 @@ class Tensor:
     return out
   
   def sigmoid(self):
-    t =  1 / (1+ self.xp.exp(-self.data))
+    clipped_data = self.xp.clip(self.data, -50, 50)
+    t =  1 / (1+ self.xp.exp(-clipped_data))
     out  = Tensor(t, (self,), op='sigmoid', device=self.device)
     def _backward():
-      self.grad += t * (1 - t) * out.grad
+      self.grad += out.data * (1 - out.data) * out.grad
     out.backward = _backward
     return out
   

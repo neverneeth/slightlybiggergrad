@@ -35,6 +35,8 @@ pip install cupy-cuda12x
 
 The API is intentionally designed to mirror PyTorch. Here is how to train a 4-layer MLP on a batched dataset using the GPU:
 
+Checkout the code in the `examples` folder for various use cases.
+
 ```python
 import numpy as np
 from src.engine import Tensor

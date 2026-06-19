@@ -14,11 +14,11 @@ theme = 'PaperMod'
 
 [params]
     env = 'production'
+    math = true
     description = 'A PyTorch-like autograd engine and neural network library built from scratch in Python.'
     defaultTheme = 'auto' # Enables automatic browser-matching dark/light mode
     showToc = false
     disableSpecial1stPost = false
-    math = true
 [params.profileMode]
     enabled = true
     title = "Slightly Bigger Grad"

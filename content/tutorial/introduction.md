@@ -8,29 +8,7 @@ Now I'm not here to tell that it's impossible. If that's what suits you then go 
 
 Let's assume that we have a tiny neural network as shown below. For now we assume that each neuron is associated with just a single number that we multiply with whatever input comes at us. 
 
-FORWARD PASS  ───────────────────────────────────────────────────────────────────────────────>
-
-   [ Input: x ]               [ Neuron 1 ]               [ Neuron 2 ]               [ Prediction ]
-      (2.0)                    Weight: w1                 Weight: w2                    (ŷ)
-        │                        (3.0)                      (1.5)                        │
-        │                          │                          │                          │
-        ▼                          ▼                          ▼                          ▼
-     (  x  ) ─────────────────> [  * ] ─────────────────> [  * ] ──────────────────> (  ŷ  ) (9.0)
-                                   │                          │                          │
-                                   ▼                          ▼                          │   [ Target: y ]
-                             [ Hidden: a ]              [ Pred: ŷ ]                      │      (10.0)
-                                 (6.0)                      (9.0)                        ▼        │
-                                                                                   [ Loss Node ] ◄┘
-                                                                                 L = (ŷ - y)² = 1.0
-
-
-<───────────────────────────────────────────────────────────────────────────────  BACKWARD PASS
-
-  ∂L/∂w1 = -6.0              ∂L/∂a = -3.0               ∂L/∂w2 = -12.0             ∂L/∂ŷ = -2.0
-  [ self.grad ]              [ local grad ]             [ param.grad ]             [ out.grad ]
-       ▲                          ▲                          ▲                          ▲
-       │   Multiply by x (2.0)    │   Multiply by w2 (1.5)   │   Multiply by a (6.0)    │
-       └──────────────────────────┴──────────────────────────┴──────────────────────────┘
+[ Input ] --> [ Neuron 1 ] --> [ Neuron 2 ] --> [ Output ]
 
 ### The Tiny Linear Cascade
 
